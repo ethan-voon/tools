@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sticker Trail Maker</title>
+<meta name="description" content="Make a printable treat trail and a take-home daily card for a kid's sticker chart. Free to share. Your settings stay in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M9.5 15.5 16 31l6.5-15.5z' fill='%23D9A25F'/%3E%3Ccircle cx='16' cy='9.5' r='8' fill='%238E5FCB'/%3E%3Cpath d='M8.2 13.5q7.8 5 15.6 0z' fill='%238E5FCB'/%3E%3Ccircle cx='12.6' cy='6.6' r='1.7' fill='%23B896E8'/%3E%3C/svg%3E">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/css/fonts.css">
+<style>
+:root {
+  --bg: #F2E9FB;
+  --dot: #E1D0F4;
+  --tint-chart: #E9DBFA;
+  --tint-card: #CFF1E3;
+  --desk-chart: #D9C5F3;
+  --desk-card: #ABE0C9;
+  --tab-off: #DCCDF0;
+  --panel: #FFFFFF;
+  --field: #F7F1FD;
+  --ink: #2A1840;
+  --muted: #62507A;
+  --edge: #2A1840;
+  --shadow: #2A1840;
+  --accent: #7B49BA;
+  --on-accent: #FFFFFF;
+  --sun: #FFD23F;
+  --mint: #5ED1A7;
+  --coral: #FF7A6B;
+  --on-pop: #2A1840;
+  --warn: #9A4D00;
+
+  /* The paper keeps the same colours in every theme. */
+  --sheet-bg: #FFFFFF;
+  --sheet-ink: #2A1840;
+  --sheet-muted: #62507A;
+  --sheet-line: #CBBFDA;
+  --sheet-spot: #7F6F99;
+  --sheet-rule: #9A8CB0;
+  --sheet-accent: #6F3FAE;
+  --sheet-ube: #8E5FCB;
+  --sheet-ube-lite: #B896E8;
+  --sheet-pink: #E4577F;
+  --sheet-cone: #D9A25F;
+  --sheet-gold: #E6A817;
+  --sheet-gold-dark: #9A7400;
+  --sheet-red: #D6453D;
+  --sheet-brown: #8A5A3C;
+  --sheet-cream: #FDF1D6;
+  --sheet-blue: #3C86D8;
+  --sheet-r1: #D6336C;
+  --sheet-r2: #C75A00;
+  --sheet-r3: #9A7400;
+  --sheet-r4: #2B8A57;
+  --sheet-r5: #2F74C0;
+  --sheet-r6: #7A4DB8;
+
+  --font-display: "Bagel Fat One", "Chalkboard SE", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1B1229; --dot: #281A3D; --tint-chart: #2E2048; --tint-card: #143A31; --desk-chart: #1F1630; --desk-card: #0F2A24; --tab-off: #1F1630; --panel: #2B1E42; --field: #1F1630;
+    --ink: #F6EEFF; --muted: #BCA9D6; --edge: #9B82C8; --shadow: #0D0718;
+    --accent: #BA92F2; --on-accent: #1B1229; --warn: #F2B068;
+    color-scheme: dark;
+  }
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(var(--dot) 2.5px, transparent 3px) 0 0 / 30px 30px, var(--bg);
+  color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.app { max-width: 1260px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 40px; }
+
+/* Header */
+.top { position: relative; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 26px; }
+.logo { flex: none; width: 76px; height: 76px; display: grid; place-items: center; background: var(--panel); border: 3px solid var(--edge); border-radius: 50%; box-shadow: 4px 4px 0 var(--shadow); transform: rotate(-7deg); }
+.logo svg { width: 48px; height: 48px; }
+.top-text { min-width: 0; flex: 1 1 280px; }
+.top h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(38px, 7vw, 58px); line-height: 1.1; margin: 0 0 8px; color: var(--ink); text-wrap: balance; }
+.top h1 .mk { display: inline-block; padding: 0 0.2em 0.05em; background: var(--sun); color: var(--on-pop); border: 3px solid var(--edge); border-radius: 14px; box-shadow: 3px 3px 0 var(--shadow); transform: rotate(-2deg); }
+.top p { margin: 0; color: var(--muted); max-width: 58ch; font-size: 16px; }
+.spark { position: absolute; width: 26px; height: 26px; }
+.spark path { fill: var(--sun); stroke: var(--edge); stroke-width: 1.6; stroke-linejoin: round; }
+.spark.s1 { right: 8%; top: -4px; transform: rotate(12deg); }
+.spark.s2 { right: 3%; bottom: 2px; width: 18px; height: 18px; }
+.spark.s3 { left: 62%; top: -10px; width: 16px; height: 16px; }
+
+#controls { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+.who-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 18px; }
+@media (max-width: 640px) { .who-grid { grid-template-columns: minmax(0, 1fr); } }
+.cols { display: grid; grid-template-columns: minmax(280px, 370px) minmax(0, 1fr); gap: 26px; align-items: start; }
+@media (max-width: 1000px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+
+/* Controls */
+.col-controls { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+.pane { margin: 0; min-width: 0; background: var(--panel); border: 3px solid var(--edge); border-radius: 20px; box-shadow: 5px 5px 0 var(--shadow); padding: 14px 16px 18px; }
+.pane > legend { margin-left: 6px; padding: 3px 14px 4px; background: var(--sun); color: var(--on-pop); border: 2px solid var(--edge); border-radius: 999px; font-family: var(--font-display); font-weight: 400; font-size: 16px; transform: rotate(-2deg); }
+.stack { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
+.sub { margin: 4px 0 -2px; padding-top: 14px; border-top: 3px dotted var(--sheet-spot); font-family: var(--font-display); font-weight: 400; font-size: 17px; color: var(--accent); }
+.sub:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.lbl { font-weight: 700; font-size: 14px; }
+.hint { margin: 0; font-size: 13px; color: var(--muted); }
+.hint.warn { color: var(--warn); font-weight: 700; }
+#controls input[type="text"], #controls input[type="number"], #controls input[type="time"] {
+  font: inherit; color: var(--ink); background: var(--field); border: 2px solid var(--edge);
+  border-radius: 12px; padding: 8px 12px; min-height: 42px; width: 100%;
+}
+#controls input::placeholder { color: var(--muted); opacity: 1; }
+.row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.num { display: flex; align-items: center; gap: 8px; }
+.num input[type="number"] { width: 96px; }
+.num span { color: var(--muted); font-size: 14px; }
+.pair { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pair input[type="range"] { flex: 1 1 120px; min-width: 0; accent-color: var(--accent); }
+.seg { position: relative; display: flex; gap: 8px; }
+.seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.seg label { flex: 1; text-align: center; padding: 8px 8px; min-height: 42px; display: grid; place-items: center; border: 2px solid var(--edge); border-radius: 12px; background: var(--field); cursor: pointer; font-weight: 700; font-size: 14px; }
+.seg input:checked + label { background: var(--accent); color: var(--on-accent); box-shadow: 2px 2px 0 var(--shadow); }
+.seg input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 3px; }
+.picks { position: relative; display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 8px; }
+.picks input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.picks label { display: grid; place-items: center; min-height: 56px; padding: 6px; border: 2px solid var(--edge); border-radius: 14px; background: var(--sheet-bg); color: var(--sheet-ink); cursor: pointer; font-size: 13px; font-weight: 700; }
+.picks svg { width: 38px; height: 38px; }
+.picks input:checked + label { background: var(--sun); border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent), 4px 4px 0 3px var(--shadow); }
+.picks input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.group { margin: 0; padding: 0; border: 0; }
+.group > legend { padding: 0; margin-bottom: 6px; }
+.check { display: flex; gap: 10px; align-items: flex-start; }
+.check input { width: 24px; height: 24px; margin: 1px 0 0; accent-color: var(--accent); flex: none; }
+.btn { font: inherit; font-weight: 700; color: var(--ink); background: var(--field); border: 2px solid var(--edge); border-radius: 12px; padding: 8px 16px; min-height: 42px; cursor: pointer; align-self: flex-start; box-shadow: 3px 3px 0 var(--shadow); }
+.btn:hover { background: var(--sun); color: var(--on-pop); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--shadow); }
+.btn-print { display: inline-flex; align-items: center; gap: 10px; padding: 10px 26px; font-size: 17px; background: var(--accent); color: var(--on-accent); }
+.btn-print svg { width: 22px; height: 22px; flex: none; }
+
+/* Tabs */
+.app { --wk-bg: var(--tint-chart); --wk-desk: var(--desk-chart); }
+.app[data-tab="card"] { --wk-bg: var(--tint-card); --wk-desk: var(--desk-card); }
+.tabbed { min-width: 0; }
+.tabs { position: relative; z-index: 2; display: flex; align-items: flex-end; gap: 8px; padding-inline: 20px; margin-bottom: -3px; }
+.tab { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 8px 24px; font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.1; color: var(--ink); background: var(--tab-off); border: 3px solid var(--edge); border-radius: 18px 18px 0 0; cursor: pointer; }
+.tab svg { width: 26px; height: 26px; flex: none; }
+.tab:hover { background: var(--sun); color: var(--on-pop); }
+.tab[aria-selected="true"] { min-height: 60px; padding-bottom: 14px; background: var(--wk-bg); border-bottom-color: var(--wk-bg); color: var(--ink); }
+.tab .t-fill { fill: currentColor; }
+@media (max-width: 640px) { .tabs { padding-inline: 10px; gap: 6px; } .tab { flex: 1 1 0; padding-inline: 8px; font-size: 17px; gap: 6px; } .tab svg { width: 22px; height: 22px; } }
+.workspace { position: relative; z-index: 1; background: var(--wk-bg); border: 3px solid var(--edge); border-radius: 24px; box-shadow: 6px 6px 0 var(--shadow); padding: 24px; min-width: 0; }
+@media (max-width: 640px) { .workspace { padding: 16px 12px; } }
+
+/* Preview */
+.preview { min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.status { margin: 0; padding: 10px 14px; border: 3px solid var(--edge); border-radius: 14px; box-shadow: 4px 4px 0 var(--shadow); color: var(--on-pop); background: var(--sun); transform: rotate(-0.4deg); }
+.status .state { font-weight: 700; }
+.status.ok { background: var(--mint); }
+.status.warn { background: var(--coral); }
+.desk { position: relative; padding: 26px 14px 14px; background: var(--wk-desk); border: 3px solid var(--edge); border-radius: 22px; }
+.desk::before, .desk::after { content: ""; position: absolute; top: -13px; width: 84px; height: 28px; background: var(--sun); opacity: 0.92; box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.14); }
+.desk::before { left: 26px; transform: rotate(-6deg); }
+.desk::after { right: 26px; transform: rotate(5deg); }
+.stage { position: relative; overflow: hidden; }
+@media screen {
+  .app[data-tab="chart"] #stageCard, .app[data-tab="card"] #stageChart { display: none; }
+}
+.foot { margin: 28px 0 0; color: var(--muted); font-size: 13px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+/* Treat pictures (drawn on a 32 x 32 grid) */
+.f-tan { fill: var(--sheet-cone); }
+.f-pink { fill: var(--sheet-pink); }
+.f-ube { fill: var(--sheet-ube); }
+.f-ube-lite { fill: var(--sheet-ube-lite); }
+.f-gold { fill: var(--sheet-gold); }
+.f-red { fill: var(--sheet-red); }
+.f-brown { fill: var(--sheet-brown); }
+.f-cream { fill: var(--sheet-cream); }
+.f-blue { fill: var(--sheet-blue); }
+.f-star { fill: var(--sheet-gold); stroke: var(--sheet-gold-dark); stroke-width: 1.4; stroke-linejoin: round; }
+.k { stroke: var(--sheet-gold); stroke-width: 0.8; }
+.l-waffle { fill: none; stroke: var(--sheet-ink); stroke-opacity: 0.35; stroke-width: 1.2; }
+.l-crust { fill: none; stroke: var(--sheet-cone); stroke-width: 3.2; stroke-linecap: round; }
+.l-stripe { fill: none; stroke: var(--sheet-bg); stroke-width: 2.2; }
+
+/* The paper */
+.sheet {
+  width: calc(21.59cm + 2px); padding: 1.5cm; background: var(--sheet-bg); color: var(--sheet-ink);
+  border: 1px solid var(--sheet-line); transform-origin: 0 0; font-family: var(--font-body); font-size: 11pt; line-height: 1.35;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+@media screen { .sheet { box-shadow: 4px 4px 0 var(--shadow); } }
+.sheet h2, .sheet h3, .sheet p, .sheet ul { margin: 0; }
+.s-head { padding-bottom: 0.35cm; border-bottom: 3px solid var(--sheet-accent); }
+.s-title { font-family: var(--font-display); font-weight: 400; font-size: 30pt; line-height: 1.1; color: var(--sheet-accent); text-wrap: balance; }
+.track { margin-top: 0.6cm; }
+.track h3 { font-family: var(--font-display); font-weight: 400; font-size: 21pt; color: var(--sheet-pink); }
+.track-sub { margin: 0.1cm 0 0.1cm; font-size: 11pt; color: var(--sheet-muted); }
+.path-svg { display: block; margin: 0.15cm auto 0; overflow: visible; }
+.trail { fill: none; stroke: var(--sheet-spot); stroke-opacity: 0.85; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 0.1 17; }
+.p-spot { fill: var(--sheet-bg); stroke-width: 5; stroke-dasharray: 11 8; }
+.p-ring { fill: none; stroke: var(--sheet-gold-dark); stroke-width: 6; }
+.p-badge { fill: var(--sheet-bg); stroke: var(--sheet-gold-dark); stroke-width: 3; }
+.p-prize { fill: var(--sheet-cream); stroke: var(--sheet-ube); stroke-width: 7; }
+.p-num { font-family: var(--font-body); font-weight: 700; fill: var(--sheet-muted); }
+.p-start { font-family: var(--font-display); font-weight: 400; fill: var(--sheet-accent); }
+.p-treat { font-family: var(--font-display); font-weight: 400; fill: var(--sheet-accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.2cm 0.8cm; margin-top: 0.4cm; padding: 0; list-style: none; font-size: 11pt; }
+.legend li { display: flex; align-items: center; gap: 0.2cm; }
+.legend svg { width: 0.7cm; height: 0.7cm; flex: none; }
+.s-foot { margin-top: 0.6cm; padding-top: 0.25cm; border-top: 1px solid var(--sheet-line); font-size: 9.5pt; color: var(--sheet-muted); }
+.blank { display: inline-block; width: 2.6cm; border-bottom: 1px solid var(--sheet-ink); margin-left: 0.15cm; }
+.blank.short { width: 1.7cm; }
+
+/* Daily cards */
+.cards { display: grid; gap: 0.5cm; }
+.cards[data-per="1"] { grid-template-columns: minmax(0, 1fr); --card-h: 24.4cm; }
+.cards[data-per="2"] { grid-template-columns: minmax(0, 1fr); --card-h: 12cm; }
+.cards[data-per="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); --card-h: 12cm; }
+.card { height: var(--card-h); display: flex; flex-direction: column; gap: 0.3cm; padding: 0.45cm 0.5cm; border: 2px dashed var(--sheet-spot); border-radius: 0.5cm; overflow: hidden; }
+.card-head { display: flex; align-items: center; gap: 0.25cm; padding-bottom: 0.2cm; border-bottom: 3px solid var(--sheet-accent); }
+.card-star { width: 0.9cm; height: 0.9cm; flex: none; }
+.card-title { font-family: var(--font-display); font-size: 18pt; line-height: 1.05; color: var(--sheet-accent); min-width: 0; }
+.card-date { margin-left: auto; font-size: 9pt; color: var(--sheet-muted); white-space: nowrap; }
+.cards[data-per="4"] .card-title { font-size: 13pt; }
+.cards[data-per="4"] .card { padding: 0.35cm 0.4cm; gap: 0.22cm; }
+.card-ask { font-size: 9pt; margin-bottom: 0.15cm; }
+.strip { display: flex; gap: 0.07cm; }
+.bw { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 0.05cm; }
+.box { width: 100%; height: 0.9cm; border: 1.5px solid var(--sheet-accent); border-radius: 0.14cm; }
+.lab { font-size: 7pt; line-height: 1; color: var(--sheet-muted); min-height: 8pt; white-space: nowrap; }
+.earned { display: flex; align-items: center; flex-wrap: wrap; gap: 0.15cm 0.2cm; }
+.e-lab { font-size: 9pt; font-weight: 700; margin-right: 0.1cm; }
+.e-dot { width: 0.8cm; height: 0.8cm; border: 2px solid var(--sheet-accent); border-radius: 50%; }
+.cards[data-per="4"] .e-dot { width: 0.7cm; height: 0.7cm; }
+.wr { flex: 1 1 0; min-height: 1.5cm; display: flex; flex-direction: column; gap: 0.08cm; }
+.wl { font-size: 9pt; font-weight: 700; }
+.writing { flex: 1; min-height: 0; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.8cm - 1px), var(--sheet-rule) calc(0.8cm - 1px), var(--sheet-rule) 0.8cm); }
+.init { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.1cm 0.4cm; font-size: 9pt; color: var(--sheet-muted); }
+
+@page { margin: 1.5cm; }
+@media print {
+  body { background: #FFFFFF; }
+  .app { max-width: none; padding: 0; }
+  .top, .who, .tabs, .col-controls, .status, .foot { display: none !important; }
+  .workspace { background: none; border: 0; box-shadow: none; padding: 0; }
+  .cols { display: block; }
+  .preview { display: block; }
+  .desk { padding: 0; border: 0; background: none; }
+  .desk::before, .desk::after { display: none; }
+  .stage { height: auto !important; overflow: visible; }
+  .sheet { transform: none !important; width: auto; padding: 0; border: 0; }
+  .app[data-pc="0"] #stageChart, .app[data-pk="0"] #stageCard { display: none !important; }
+  .app[data-pc="1"] #stageChart, .app[data-pk="1"] #stageCard { display: block !important; }
+  .app[data-pc="1"][data-pk="1"] #stageChart { break-after: page; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tab, .btn, .picks label { transition: transform 0.12s ease, background-color 0.12s ease; }
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app" data-tab="chart" data-pc="1" data-pk="1">
+  <header class="top">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 32 32" focusable="false"><g transform="translate(4 0)"><path class="f-tan" d="M5.5 15.5 12 31l6.5-15.5z"/><path class="l-waffle" d="M8.6 19.5h6.8M10.4 24h3.2"/><circle class="f-ube" cx="12" cy="9.5" r="8"/><path class="f-ube" d="M4.2 13.5q7.8 5 15.6 0z"/><circle class="f-ube-lite" cx="8.6" cy="6.6" r="1.7"/></g></svg>
+    </div>
+    <div class="top-text">
+      <h1>Sticker <span class="mk">Trail</span></h1>
+      <p>Make a winding treat trail and a take-home daily card, then print them for your kid.</p>
+    </div>
+    <svg class="spark s1" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3l3.9 8.3 9.1 1.1-6.7 6.3 1.8 9L16 23.2 7.9 27.7l1.8-9L3 12.4l9.1-1.1z"/></svg>
+    <svg class="spark s2" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3l3.9 8.3 9.1 1.1-6.7 6.3 1.8 9L16 23.2 7.9 27.7l1.8-9L3 12.4l9.1-1.1z"/></svg>
+    <svg class="spark s3" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3l3.9 8.3 9.1 1.1-6.7 6.3 1.8 9L16 23.2 7.9 27.7l1.8-9L3 12.4l9.1-1.1z"/></svg>
+  </header>
+
+  <main>
+  <form id="controls" autocomplete="off">
+    <fieldset class="pane who">
+      <legend>Who it's for (used by both)</legend>
+      <div class="stack">
+        <div class="who-grid">
+          <div class="field">
+            <label class="lbl" for="name">Child's name</label>
+            <input id="name" type="text" maxlength="24" placeholder="Optional, shows in the titles">
+          </div>
+          <div class="field">
+            <label class="lbl" for="cls">What the class is called</label>
+            <input id="cls" type="text" maxlength="40" aria-describedby="clsHint">
+            <p class="hint" id="clsHint">Used on the daily card, for example "in general education class".</p>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="tabbed">
+      <div class="tabs" role="tablist" aria-label="What to make">
+        <button type="button" class="tab t-chart" id="tabChart" role="tab" aria-controls="workspace" aria-selected="true">
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M4 24q6-14 12-6t12-12" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0.1 7"/><circle class="t-fill" cx="5" cy="25" r="3.2"/><path class="t-fill" d="M26 3l1.7 3.6 4 .5-2.9 2.7.8 3.9L26 11.7l-3.6 2 .8-3.9-2.9-2.7 4-.5z"/></svg>
+          <span>Treat trail</span>
+        </button>
+        <button type="button" class="tab t-card" id="tabCard" role="tab" aria-controls="workspace" aria-selected="false" tabindex="-1">
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect x="5" y="5" width="22" height="23" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><path d="M10 14h12M10 20h8" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/><rect class="t-fill" x="11" y="2" width="10" height="5" rx="2"/></svg>
+          <span>Daily card</span>
+        </button>
+      </div>
+
+      <div class="workspace" id="workspace" role="tabpanel" aria-labelledby="tabChart">
+        <div class="cols">
+          <div class="col-controls">
+            <fieldset class="pane" id="setChart">
+              <legend>Treat trail settings</legend>
+              <div class="stack">
+                <h2 class="sub">The words</h2>
+                <div class="field">
+                  <label class="lbl" for="chartTitle">Chart title</label>
+                  <input id="chartTitle" type="text" maxlength="50" aria-describedby="chartTitleHint">
+                  <p class="hint" id="chartTitleHint">Leave blank to use the suggestion shown in the box.</p>
+                </div>
+
+                <h2 class="sub">The sticker spots</h2>
+                <div class="field">
+                  <label class="lbl" for="size">Sticker size</label>
+                  <div class="pair">
+                    <input id="sizeRange" type="range" min="0.5" max="3" step="0.1" aria-label="Sticker size in centimetres" aria-describedby="sizeHint">
+                    <div class="num"><input id="size" type="number" min="0.5" max="3" step="0.1" inputmode="decimal" aria-describedby="sizeUnit sizeHint"><span id="sizeUnit">cm</span></div>
+                  </div>
+                  <p class="hint" id="sizeHint"></p>
+                </div>
+                <fieldset class="field group">
+                  <legend class="lbl">Spot shape</legend>
+                  <div class="seg">
+                    <input type="radio" name="shape" id="shapeCircle" value="circle"><label for="shapeCircle">Circle</label>
+                    <input type="radio" name="shape" id="shapeSquare" value="square"><label for="shapeSquare">Square</label>
+                  </div>
+                </fieldset>
+
+                <h2 class="sub">The treat</h2>
+                <div class="field">
+                  <label class="lbl" for="goal">Stickers to reach the treat</label>
+                  <div class="num"><input id="goal" type="number" min="1" max="40" step="1" inputmode="numeric" aria-describedby="goalUnit"><span id="goalUnit">stickers</span></div>
+                </div>
+                <div class="field">
+                  <label class="lbl" for="reward">Treat</label>
+                  <input id="reward" type="text" maxlength="30">
+                </div>
+                <fieldset class="field group">
+                  <legend class="lbl">Treat picture</legend>
+                  <div class="picks" id="iconPicks"></div>
+                </fieldset>
+                <div class="field">
+                  <label class="lbl" for="mid">Small treat at (0 for none)</label>
+                  <div class="num"><input id="mid" type="number" min="0" max="40" step="1" inputmode="numeric" aria-describedby="midUnit midHint"><span id="midUnit">stickers</span></div>
+                  <p class="hint" id="midHint"></p>
+                </div>
+                <div class="field">
+                  <label class="lbl" for="midReward">Small treat</label>
+                  <input id="midReward" type="text" maxlength="30">
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="pane" id="setCard" hidden>
+              <legend>Daily card settings</legend>
+              <div class="stack">
+                <p class="hint">A card the teacher fills in and sends home each day, so you can see the time and add the stickers to the trail.</p>
+                <div class="field">
+                  <label class="lbl" for="cardTitle">Card title</label>
+                  <input id="cardTitle" type="text" maxlength="40" aria-describedby="cardTitleHint">
+                  <p class="hint" id="cardTitleHint">Leave blank to use the suggestion shown in the box.</p>
+                </div>
+
+                <h2 class="sub">The school day</h2>
+                <div class="row2">
+                  <div class="field">
+                    <label class="lbl" for="start">Day starts</label>
+                    <input id="start" type="time" step="900">
+                  </div>
+                  <div class="field">
+                    <label class="lbl" for="end">Day ends</label>
+                    <input id="end" type="time" step="900" aria-describedby="cardHint">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="lbl" for="minutes">Minutes per sticker</label>
+                  <div class="num"><input id="minutes" type="number" min="5" max="120" step="5" inputmode="numeric" aria-describedby="minutesUnit"><span id="minutesUnit">minutes</span></div>
+                </div>
+                <div class="field">
+                  <label class="lbl" for="cap">Most stickers per day</label>
+                  <div class="num"><input id="cap" type="number" min="1" max="12" step="1" inputmode="numeric" aria-describedby="capUnit cardHint"><span id="capUnit">stickers</span></div>
+                  <p class="hint" id="cardHint"></p>
+                </div>
+
+                <h2 class="sub">What goes on the card</h2>
+                <div class="check"><input id="showStrip" type="checkbox"><label for="showStrip">Row of time boxes to shade in</label></div>
+                <div class="check"><input id="showStickers" type="checkbox"><label for="showStickers">Circles for stickers earned</label></div>
+                <div class="check"><input id="showWell" type="checkbox"><label for="showWell">Space for "Went well today"</label></div>
+                <div class="check"><input id="showNote" type="checkbox"><label for="showNote">Space for a note home</label></div>
+                <div class="check"><input id="showInitials" type="checkbox"><label for="showInitials">Initials for teacher and parent</label></div>
+
+                <h2 class="sub">Cards on a page</h2>
+                <fieldset class="field group" aria-describedby="perHint">
+                  <legend class="sr">Cards per page</legend>
+                  <div class="seg">
+                    <input type="radio" name="perPage" id="perOne" value="1"><label for="perOne">1</label>
+                    <input type="radio" name="perPage" id="perTwo" value="2"><label for="perTwo">2</label>
+                    <input type="radio" name="perPage" id="perFour" value="4"><label for="perFour">4</label>
+                  </div>
+                  <p class="hint" id="perHint">Print a page, cut along the dotted lines, and hand over a stack.</p>
+                </fieldset>
+              </div>
+            </fieldset>
+
+            <fieldset class="pane" id="printPane">
+              <legend>Print</legend>
+              <div class="stack">
+                <div class="check"><input id="printChart" type="checkbox"><label for="printChart">Treat trail</label></div>
+                <div class="check"><input id="printCard" type="checkbox"><label for="printCard">Daily cards</label></div>
+                <button type="button" class="btn btn-print" id="printBtn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h10v5H7z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M7 15H4.5A1.5 1.5 0 0 1 3 13.5v-4A1.5 1.5 0 0 1 4.5 8h15A1.5 1.5 0 0 1 21 9.5v4a1.5 1.5 0 0 1-1.5 1.5H17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M7 13h10v8H7z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Print</span></button>
+                <p class="hint">Only the boxes ticked above will print, each on its own page. Leave the scale at 100% so the sticker spots stay true size.</p>
+              </div>
+            </fieldset>
+          </div>
+
+          <section class="preview" aria-label="Preview">
+            <p class="status" id="status" role="status"></p>
+            <div class="desk">
+              <div class="stage" id="stageChart"><article class="sheet" id="sheetChart" aria-label="Treat trail page"></article></div>
+              <div class="stage" id="stageCard"><article class="sheet" id="sheetCard" aria-label="Daily card page"></article></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  </main>
+
+  <footer class="foot">
+    <span>Your settings are saved in this browser only.</span>
+    <button type="button" class="btn" id="reset">Start over</button>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var KEY = 'stickerTrail.v1';
+  var DEFAULTS = {
+    name: '', cls: 'general education class', tab: 'chart',
+    title: '', size: 1, shape: 'circle', goal: 10, mid: 5,
+    reward: 'Ube ice cream', midReward: 'Pick a game or a story', icon: 'ube',
+    cardTitle: '', start: '08:00', end: '14:00', minutes: 30, cap: 4, perPage: '2',
+    showStrip: true, showStickers: true, showWell: true, showNote: true, showInitials: true,
+    printChart: true, printCard: true
+  };
+  var PX_PER_CM = 96 / 2.54;
+  var PAGE_CM = 24.9; // Letter is 27.94 cm tall; the 1.5 cm margins leave about 24.9 cm.
+  var PATH_W = 17.8;  // cm; fits inside the printable width of both Letter and A4.
+  var DAYS_BLOCKS_MAX = 24;
+
+  /* Every control, by setting name */
+  var F = {
+    name: { id: 'name', type: 'text', max: 24 },
+    cls: { id: 'cls', type: 'text', max: 40 },
+    title: { id: 'chartTitle', type: 'text', max: 50 },
+    cardTitle: { id: 'cardTitle', type: 'text', max: 40 },
+    reward: { id: 'reward', type: 'text', max: 30 },
+    midReward: { id: 'midReward', type: 'text', max: 30 },
+    size: { id: 'size', type: 'num', min: 0.5, max: 3, dec: 1 },
+    goal: { id: 'goal', type: 'num', min: 1, max: 40, dec: 0 },
+    mid: { id: 'mid', type: 'num', min: 0, max: 40, dec: 0 },
+    minutes: { id: 'minutes', type: 'num', min: 5, max: 120, dec: 0 },
+    cap: { id: 'cap', type: 'num', min: 1, max: 12, dec: 0 },
+    start: { id: 'start', type: 'time' },
+    end: { id: 'end', type: 'time' },
+    showStrip: { id: 'showStrip', type: 'check' },
+    showStickers: { id: 'showStickers', type: 'check' },
+    showWell: { id: 'showWell', type: 'check' },
+    showNote: { id: 'showNote', type: 'check' },
+    showInitials: { id: 'showInitials', type: 'check' },
+    printChart: { id: 'printChart', type: 'check' },
+    printCard: { id: 'printCard', type: 'check' }
+  };
+
+  var ICON_LABELS = {
+    ube: 'Ube ice cream', icecream: 'Strawberry ice cream', cookie: 'Cookie', cupcake: 'Cupcake',
+    pizza: 'Pizza', popcorn: 'Popcorn', star: 'Star', none: 'None'
+  };
+  var ICON_KEYS = Object.keys(ICON_LABELS);
+  var CONE = '<path class="f-tan" d="M5.5 15.5 12 31l6.5-15.5z"/><path class="l-waffle" d="M8.6 19.5h6.8M10.4 24h3.2"/>';
+  var ICONS = {
+    ube: '<g transform="translate(4 0)">' + CONE + '<circle class="f-ube" cx="12" cy="9.5" r="8"/><path class="f-ube" d="M4.2 13.5q7.8 5 15.6 0z"/><circle class="f-ube-lite" cx="8.6" cy="6.6" r="1.7"/></g>',
+    icecream: '<g transform="translate(4 0)">' + CONE + '<circle class="f-pink" cx="12" cy="9.5" r="8"/><path class="f-pink" d="M4.2 13.5q7.8 5 15.6 0z"/></g>',
+    cookie: '<circle class="f-tan" cx="16" cy="16" r="12.5"/><circle class="f-brown" cx="11" cy="12" r="2.1"/><circle class="f-brown" cx="20.5" cy="11" r="1.9"/><circle class="f-brown" cx="21" cy="19.5" r="2.3"/><circle class="f-brown" cx="12" cy="21" r="1.9"/><circle class="f-brown" cx="16.5" cy="16" r="1.5"/>',
+    cupcake: '<path class="f-blue" d="M7 17h18l-3 12H10z"/><path class="f-pink" d="M5.5 18Q5 9.5 16 8.5 27 9.5 26.5 18z"/><circle class="f-pink" cx="16" cy="7" r="3.2"/><circle class="f-red" cx="16" cy="3.8" r="1.8"/>',
+    pizza: '<path class="f-gold" d="M4 8Q16 3 28 8L16 30z"/><path class="l-crust" d="M4 8Q16 3 28 8"/><circle class="f-red" cx="13" cy="13" r="2.3"/><circle class="f-red" cx="19.5" cy="12.5" r="2.1"/><circle class="f-red" cx="16" cy="20" r="2.2"/>',
+    popcorn: '<circle class="f-cream k" cx="10" cy="11.5" r="3.3"/><circle class="f-cream k" cx="16" cy="9" r="3.8"/><circle class="f-cream k" cx="22" cy="11.5" r="3.3"/><circle class="f-cream k" cx="13" cy="13" r="2.8"/><circle class="f-cream k" cx="19" cy="13" r="2.8"/><path class="f-red" d="M8 14h16l-2 15H10z"/><path class="l-stripe" d="M13.2 14l.7 15M18.8 14l-.7 15"/>',
+    star: '<path class="f-star" d="M16 3l3.9 8.3 9.1 1.1-6.7 6.3 1.8 9L16 23.2 7.9 27.7l1.8-9L3 12.4l9.1-1.1z"/>'
+  };
+
+  function $(id) { return document.getElementById(id); }
+  var el = {};
+  Object.keys(F).forEach(function (k) { el[k] = $(F[k].id); });
+  el.sizeRange = $('sizeRange');
+  el.shapeCircle = $('shapeCircle'); el.shapeSquare = $('shapeSquare');
+  el.perOne = $('perOne'); el.perTwo = $('perTwo'); el.perFour = $('perFour');
+  var app = $('app'), form = $('controls'), statusEl = $('status');
+  var sheetChart = $('sheetChart'), sheetCard = $('sheetCard');
+  var stageChart = $('stageChart'), stageCard = $('stageCard');
+  var tabChart = $('tabChart'), tabCard = $('tabCard');
+  var setChart = $('setChart'), setCard = $('setCard'), workspace = $('workspace');
+
+  /* Time helpers */
+  function toMin(t) {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(String(t));
+    if (!m) return null;
+    var h = +m[1], mi = +m[2];
+    if (h > 23 || mi > 59) return null;
+    return h * 60 + mi;
+  }
+  function clock(t, withAmPm) {
+    var h = Math.floor(t / 60) % 24, m = t % 60;
+    var h12 = ((h + 11) % 12) + 1;
+    var out = h12 + ':' + (m < 10 ? '0' + m : m);
+    return withAmPm ? out + (h >= 12 ? ' pm' : ' am') : out;
+  }
+  function dur(m) {
+    if (m < 60) return m + ' min';
+    var h = Math.floor(m / 60), r = m % 60;
+    if (r === 0) return h + (h === 1 ? ' hour' : ' hours');
+    return h + ' hr ' + r + ' min';
+  }
+
+  /* Settings */
+  function clamp(v, min, max, fallback) {
+    v = Number(v);
+    if (!isFinite(v)) return fallback;
+    return Math.min(max, Math.max(min, v));
+  }
+  function clean(o) {
+    Object.keys(F).forEach(function (k) {
+      var f = F[k];
+      if (f.type === 'text') o[k] = String(o[k]).slice(0, f.max);
+      else if (f.type === 'num') {
+        var p = Math.pow(10, f.dec);
+        o[k] = Math.round(clamp(o[k], f.min, f.max, DEFAULTS[k]) * p) / p;
+      }
+      else if (f.type === 'time') { if (toMin(o[k]) === null) o[k] = DEFAULTS[k]; }
+      else o[k] = !!o[k];
+    });
+    o.shape = o.shape === 'square' ? 'square' : 'circle';
+    o.perPage = (o.perPage === '1' || o.perPage === '4') ? o.perPage : '2';
+    o.tab = o.tab === 'card' ? 'card' : 'chart';
+    if (ICON_KEYS.indexOf(o.icon) < 0) o.icon = 'ube';
+    if (!o.printChart && !o.printCard) o.printChart = true;
+    return o;
+  }
+  function merge(out, p) {
+    if (!p || typeof p !== 'object') return;
+    Object.keys(DEFAULTS).forEach(function (k) {
+      if (typeof p[k] === typeof DEFAULTS[k]) out[k] = p[k];
+    });
+  }
+  function load() {
+    var out = Object.assign({}, DEFAULTS);
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) merge(out, JSON.parse(raw));
+    } catch (e) { /* storage unavailable: use starting values */ }
+    return clean(out);
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { /* ignore */ }
+  }
+
+  var s = load();
+
+  function fmt(n) { return String(Math.round(n * 10) / 10); }
+  function esc(t) {
+    return String(t).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function iconSvg(key) {
+    if (!ICONS[key]) return '';
+    return '<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">' + ICONS[key] + '</svg>';
+  }
+
+  /* Treat picture choices */
+  var iconBox = $('iconPicks');
+  (function () {
+    var h = '';
+    ICON_KEYS.forEach(function (k) {
+      h += '<input type="radio" name="icon" id="icon-' + k + '" value="' + k + '">' +
+        '<label for="icon-' + k + '" title="' + ICON_LABELS[k] + '">' +
+        (k === 'none' ? 'None' : iconSvg(k) + '<span class="sr">' + ICON_LABELS[k] + '</span>') + '</label>';
+    });
+    iconBox.innerHTML = h;
+  })();
+  var iconInputs = iconBox.querySelectorAll('input');
+
+  function syncTabs() {
+    var chart = s.tab === 'chart';
+    tabChart.setAttribute('aria-selected', chart ? 'true' : 'false');
+    tabCard.setAttribute('aria-selected', chart ? 'false' : 'true');
+    tabChart.tabIndex = chart ? 0 : -1;
+    tabCard.tabIndex = chart ? -1 : 0;
+    setChart.hidden = !chart;
+    setCard.hidden = chart;
+    workspace.setAttribute('aria-labelledby', chart ? 'tabChart' : 'tabCard');
+    app.setAttribute('data-tab', s.tab);
+  }
+
+  function syncInputs() {
+    Object.keys(F).forEach(function (k) {
+      if (F[k].type === 'check') el[k].checked = !!s[k];
+      else el[k].value = s[k];
+    });
+    el.sizeRange.value = s.size;
+    el.shapeCircle.checked = s.shape === 'circle';
+    el.shapeSquare.checked = s.shape === 'square';
+    el.perOne.checked = s.perPage === '1';
+    el.perTwo.checked = s.perPage === '2';
+    el.perFour.checked = s.perPage === '4';
+    Array.prototype.forEach.call(iconInputs, function (i) { i.checked = i.value === s.icon; });
+    syncTabs();
+  }
+
+  function readState() {
+    Object.keys(F).forEach(function (k) {
+      var f = F[k], e = el[k];
+      if (f.type === 'check') s[k] = !!e.checked;
+      else if (f.type === 'text') s[k] = String(e.value).slice(0, f.max);
+      else if (f.type === 'num') {
+        var raw = parseFloat(e.value);
+        if (isFinite(raw)) {
+          var p = Math.pow(10, f.dec);
+          s[k] = Math.round(Math.min(f.max, Math.max(f.min, raw)) * p) / p;
+        }
+      }
+      else if (f.type === 'time') { if (toMin(e.value) !== null) s[k] = e.value; }
+    });
+    s.shape = el.shapeSquare.checked ? 'square' : 'circle';
+    s.perPage = el.perFour.checked ? '4' : (el.perOne.checked ? '1' : '2');
+    Array.prototype.forEach.call(iconInputs, function (i) { if (i.checked) s.icon = i.value; });
+    if (!s.printChart && !s.printCard) s.printChart = true;
+  }
+
+  function hints() {
+    var spot = fmt(s.size + 0.2);
+    $('sizeHint').textContent = 'Spots are drawn 2 mm larger than the sticker, so ' + spot + ' × ' + spot + ' cm on paper.';
+
+    var midEl = $('midHint');
+    if (s.mid === 0) {
+      midEl.textContent = 'No small treat on the trail.';
+      midEl.className = 'hint';
+    } else if (s.mid >= s.goal) {
+      midEl.textContent = 'Pick a number below the treat goal of ' + s.goal + '.';
+      midEl.className = 'hint warn';
+    } else {
+      midEl.textContent = 'Marked with a star at ' + s.mid + ' stickers.';
+      midEl.className = 'hint';
+    }
+
+    var a = toMin(s.start), b = toMin(s.end), ch = $('cardHint');
+    var capMin = s.cap * s.minutes;
+    if (a === null || b === null || b <= a) {
+      ch.textContent = 'The end time needs to be after the start time.';
+      ch.className = 'hint warn';
+    } else if (capMin > b - a) {
+      ch.textContent = s.cap + ' stickers = ' + dur(capMin) + ', which is more than the school day (' + dur(b - a) + ').';
+      ch.className = 'hint warn';
+    } else {
+      ch.textContent = s.cap + ' stickers = ' + dur(capMin) + ', out of a school day of ' + dur(b - a) + '.';
+      ch.className = 'hint';
+    }
+
+    flag(el.mid, s.mid > 0 && s.mid >= s.goal);
+    flag(el.end, a === null || b === null || b <= a);
+  }
+  function flag(input, bad) {
+    if (bad) input.setAttribute('aria-invalid', 'true');
+    else input.removeAttribute('aria-invalid');
+  }
+
+  /* The treat trail: a winding path drawn in real centimetres (1 unit = 0.1 mm) */
+  function u(v) { return Math.round(v * 100); }
+  function sparkle(cx, cy, r) {
+    return '<path class="f-gold" d="M' + cx + ' ' + (cy - r) + 'Q' + cx + ' ' + cy + ' ' + (cx + r) + ' ' + cy +
+      'Q' + cx + ' ' + cy + ' ' + cx + ' ' + (cy + r) + 'Q' + cx + ' ' + cy + ' ' + (cx - r) + ' ' + cy +
+      'Q' + cx + ' ' + cy + ' ' + cx + ' ' + (cy - r) + 'z"/>';
+  }
+  function iconG(key, cx, cy, size) {
+    var sc = size / 32;
+    return '<g transform="translate(' + (cx - 16 * sc) + ' ' + (cy - 16 * sc) + ') scale(' + sc + ')">' + ICONS[key] + '</g>';
+  }
+
+  function pathSvg(midOn) {
+    var D = s.size + 0.2;
+    var sq = s.shape === 'square';
+    var N = s.goal + 1; // the sticker spots, then the treat
+    var rowPitch = Math.max(D + 1.5, 4.2);
+    var r = rowPitch / 2;
+    var span = PATH_W - 2 * r;
+    var maxPer = Math.max(2, Math.floor(span / (D + 0.45)) + 1);
+    var rows = Math.max(Math.ceil(N / maxPer), N >= 9 ? 3 : (N >= 5 ? 2 : 1));
+    var per = Math.ceil(N / rows);
+    while (rows > 1 && (rows - 1) * per >= N) rows--;
+    var g = per > 1 ? Math.min(D + 2.4, span / (per - 1)) : 0;
+    var used = (per - 1) * g;
+    var x0 = (PATH_W - used) / 2;
+    var xR = x0 + used;
+    var P = Math.min(2.6, 2 * (g - D / 2 - 0.08));
+    if (per === 1) P = 2.6;
+    var maxD = Math.max(D, P);
+    var y0 = 0.9 + maxD / 2;
+    var H = y0 + (rows - 1) * rowPitch + maxD / 2 + 0.7;
+
+    var pts = [], k;
+    for (k = 0; k < N; k++) {
+      var row = Math.floor(k / per), pos = k % per;
+      var x = row % 2 === 0 ? x0 + pos * g : xR - pos * g;
+      pts.push({ x: x, y: y0 + row * rowPitch, row: row });
+    }
+
+    var d = 'M' + u(pts[0].x) + ' ' + u(pts[0].y);
+    for (k = 1; k < N; k++) {
+      var a = pts[k - 1], b = pts[k];
+      if (a.row === b.row) d += 'L' + u(b.x) + ' ' + u(b.y);
+      else d += 'A' + u(r) + ' ' + u(r) + ' 0 0 ' + (a.row % 2 === 0 ? 1 : 0) + ' ' + u(b.x) + ' ' + u(b.y);
+    }
+
+    var out = '<svg class="path-svg" width="' + PATH_W + 'cm" height="' + H.toFixed(2) + 'cm" viewBox="0 0 ' + u(PATH_W) + ' ' + u(H) +
+      '" role="img" aria-label="Treat trail with ' + s.goal + ' spots">';
+    out += '<path class="trail" d="' + d + '"/>';
+    out += '<text class="p-start" x="' + u(pts[0].x) + '" y="' + (u(pts[0].y - D / 2) - 20) +
+      '" font-size="34" letter-spacing="4" text-anchor="middle">START</text>';
+
+    for (k = 0; k < s.goal; k++) {
+      var p = pts[k];
+      var cx = u(p.x), cy = u(p.y), col = 'var(--sheet-r' + (k % 6 + 1) + ')';
+      var isMid = midOn && k + 1 === s.mid;
+      if (isMid) {
+        var rr = D / 2 + 0.1;
+        out += sq
+          ? '<rect class="p-ring" x="' + u(p.x - rr) + '" y="' + u(p.y - rr) + '" width="' + u(2 * rr) + '" height="' + u(2 * rr) + '" rx="' + u(0.3) + '"/>'
+          : '<circle class="p-ring" cx="' + cx + '" cy="' + cy + '" r="' + u(rr) + '"/>';
+      }
+      out += sq
+        ? '<rect class="p-spot" style="stroke:' + col + '" x="' + u(p.x - D / 2) + '" y="' + u(p.y - D / 2) + '" width="' + u(D) + '" height="' + u(D) + '" rx="' + u(0.25) + '"/>'
+        : '<circle class="p-spot" style="stroke:' + col + '" cx="' + cx + '" cy="' + cy + '" r="' + u(D / 2) + '"/>';
+      var fs = Math.max(26, Math.round(u(D) * 0.3));
+      out += '<text class="p-num" x="' + cx + '" y="' + cy + '" font-size="' + fs +
+        '" text-anchor="middle" dominant-baseline="central">' + (k + 1) + '</text>';
+      if (isMid) {
+        var bx = u(p.x + D * 0.38), by = u(p.y - D * 0.38);
+        out += '<circle class="p-badge" cx="' + bx + '" cy="' + by + '" r="17"/>' + iconG('star', bx, by, 24);
+      }
+    }
+
+    var pz = pts[s.goal], pcx = u(pz.x), pcy = u(pz.y), pr = u(P / 2);
+    out += '<circle class="p-prize" cx="' + pcx + '" cy="' + pcy + '" r="' + pr + '"/>';
+    if (s.icon !== 'none') {
+      out += iconG(s.icon, pcx, pcy, Math.round(u(P) * 0.62));
+    } else {
+      out += '<text class="p-treat" x="' + pcx + '" y="' + pcy + '" font-size="' + Math.round(u(P) * 0.2) +
+        '" text-anchor="middle" dominant-baseline="central">TREAT!</text>';
+    }
+    out += sparkle(pcx + Math.round(pr * 0.95), pcy - Math.round(pr * 0.85), 15);
+    out += sparkle(pcx - Math.round(pr * 0.95), pcy - Math.round(pr * 0.9), 10);
+    out += sparkle(pcx + Math.round(pr * 0.9), pcy + Math.round(pr * 0.9), 11);
+    return out + '</svg>';
+  }
+
+  function chartHtml() {
+    var nm = s.name.trim();
+    var autoTitle = (nm ? nm + '’s' : 'My') + ' Sticker Trail';
+    var title = s.title.trim() || autoTitle;
+    el.title.placeholder = autoTitle;
+    var reward = s.reward.trim() || 'Treat';
+    var midReward = s.midReward.trim() || 'Small treat';
+    var midOn = s.mid > 0 && s.mid < s.goal;
+
+    var h = '<header class="s-head"><h2 class="s-title">' + esc(title) + '</h2></header>';
+    h += '<section class="track"><h3>Road to ' + esc(reward) + '</h3>' +
+      '<p class="track-sub">Put a sticker on the next open spot each time one is earned.</p>' +
+      pathSvg(midOn) + '<ul class="legend">' +
+      (midOn ? '<li>' + iconSvg('star') + '<span>' + s.mid + ' stickers: ' + esc(midReward) + '</span></li>' : '') +
+      '<li>' + iconSvg(s.icon) + '<span>' + s.goal + ' stickers: ' + esc(reward) + '</span></li></ul></section>';
+    h += '<p class="s-foot">Every sticker you earn stays on the trail.</p>';
+    return h;
+  }
+
+  /* The daily take-home card */
+  function oneCard() {
+    var nm = s.name.trim(), cls = s.cls.trim() || 'class';
+    var autoTitle = nm ? nm + '’s Day' : 'Today at School';
+    el.cardTitle.placeholder = autoTitle;
+    var title = s.cardTitle.trim() || autoTitle;
+    var a = toMin(s.start), b = toMin(s.end);
+    if (a === null) a = 480;
+    if (b === null || b <= a) b = a + 360;
+    var blocks = Math.max(1, Math.min(DAYS_BLOCKS_MAX, Math.floor((b - a) / s.minutes)));
+    var i;
+
+    var h = '<div class="card"><div class="card-head"><svg class="card-star" viewBox="0 0 32 32" aria-hidden="true" focusable="false">' + ICONS.star + '</svg>' +
+      '<span class="card-title">' + esc(title) + '</span>' +
+      '<span class="card-date">Date<span class="blank"></span></span></div>';
+
+    if (s.showStrip) {
+      h += '<div><p class="card-ask">Shade a box for each <b>' + dur(s.minutes) + '</b> in ' + esc(cls) + '.</p><div class="strip">';
+      for (i = 0; i < blocks; i++) {
+        var t = a + i * s.minutes;
+        var lab = (t % 60 === 0 || s.minutes >= 60) ? clock(t, false) : '';
+        h += '<span class="bw"><span class="box"></span><span class="lab">' + lab + '</span></span>';
+      }
+      h += '</div></div>';
+    }
+    if (s.showStickers) {
+      h += '<div class="earned"><span class="e-lab">Stickers earned (up to ' + s.cap + ')</span>';
+      for (i = 0; i < s.cap; i++) h += '<span class="e-dot" style="border-color:var(--sheet-r' + (i % 6 + 1) + ')"></span>';
+      h += '</div>';
+    }
+    if (s.showWell) h += '<div class="wr"><p class="wl">Went well today</p><div class="writing"></div></div>';
+    if (s.showNote) h += '<div class="wr"><p class="wl">Note for home</p><div class="writing"></div></div>';
+    if (s.showInitials) {
+      h += '<div class="init"><span>Teacher initials<span class="blank short"></span></span><span>Parent initials<span class="blank short"></span></span></div>';
+    }
+    return h + '</div>';
+  }
+  function cardsHtml() {
+    var n = +s.perPage, h = '<div class="cards" data-per="' + n + '">', i;
+    for (i = 0; i < n; i++) h += oneCard();
+    return h + '</div>';
+  }
+
+  function render() {
+    sheetChart.innerHTML = chartHtml();
+    sheetCard.innerHTML = cardsHtml();
+    app.setAttribute('data-pc', s.printChart ? '1' : '0');
+    app.setAttribute('data-pk', s.printCard ? '1' : '0');
+    syncTabs();
+    hints();
+    refresh();
+  }
+
+  function fitOne(stage, sheet) {
+    var avail = stage.clientWidth;
+    var w = sheet.offsetWidth;
+    var k = avail > 0 && w > 0 ? Math.min(1, avail / w) : 1;
+    sheet.style.transform = k < 1 ? 'scale(' + k + ')' : 'none';
+    stage.style.height = Math.ceil(sheet.offsetHeight * k) + 'px';
+  }
+  function fit() {
+    fitOne(stageChart, sheetChart);
+    fitOne(stageCard, sheetCard);
+  }
+
+  function updateStatus() {
+    var html, fits = true;
+    if (s.tab === 'chart') {
+      var spot = fmt(s.size + 0.2);
+      var contentCm = sheetChart.offsetHeight / PX_PER_CM - 3;
+      var over = contentCm - PAGE_CM;
+      fits = over <= 0;
+      html = '<span class="state">' +
+        (fits ? 'Fits on one Letter or A4 page.' : 'About ' + (Math.ceil(over * 10) / 10) + ' cm too tall for one page.') +
+        '</span> ' + (fits ? '' : 'Try a smaller sticker or a lower treat goal. ') +
+        'Each sticker spot prints at ' + spot + ' × ' + spot + ' cm.';
+    } else {
+      var crowded = false;
+      Array.prototype.forEach.call(sheetCard.querySelectorAll('.card'), function (c) {
+        if (c.scrollHeight > c.clientHeight + 1) crowded = true;
+      });
+      fits = !crowded;
+      html = '<span class="state">' +
+        (fits ? s.perPage + (s.perPage === '1' ? ' card' : ' cards') + ' per page.' : 'The cards are too full.') +
+        '</span> ' + (fits ? 'Print a page, then cut along the dotted lines.' : 'Turn off an item or use fewer cards per page.');
+    }
+    statusEl.className = 'status ' + (fits ? 'ok' : 'warn');
+    // Only touch the live region when the message changes, so screen readers
+    // don't repeat it on every keystroke.
+    if (statusEl.innerHTML !== html) statusEl.innerHTML = html;
+  }
+
+  function refresh() {
+    fit();
+    updateStatus();
+  }
+
+  function update(e) {
+    if (e && e.target === el.sizeRange) el.size.value = el.sizeRange.value;
+    readState();
+    el.sizeRange.value = s.size;
+    save();
+    render();
+  }
+
+  form.addEventListener('input', update);
+  form.addEventListener('change', function (e) {
+    update(e);
+    syncInputs();
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+  function chooseTab(name, focus) {
+    s.tab = name;
+    save();
+    syncTabs();
+    refresh();
+    if (focus) (name === 'chart' ? tabChart : tabCard).focus();
+  }
+  tabChart.addEventListener('click', function () { chooseTab('chart', false); });
+  tabCard.addEventListener('click', function () { chooseTab('card', false); });
+  [tabChart, tabCard].forEach(function (t) {
+    t.addEventListener('keydown', function (e) {
+      var k = e.key;
+      if (k === 'ArrowRight' || k === 'ArrowLeft') {
+        e.preventDefault();
+        chooseTab(s.tab === 'chart' ? 'card' : 'chart', true);
+      } else if (k === 'Home') {
+        e.preventDefault();
+        chooseTab('chart', true);
+      } else if (k === 'End') {
+        e.preventDefault();
+        chooseTab('card', true);
+      }
+    });
+  });
+
+  $('printBtn').addEventListener('click', function () { window.print(); });
+
+  $('reset').addEventListener('click', function () {
+    s = clean(Object.assign({}, DEFAULTS));
+    syncInputs();
+    save();
+    render();
+  });
+
+  var lastW = 0;
+  if (window.ResizeObserver) {
+    new ResizeObserver(function () {
+      var w = (s.tab === 'chart' ? stageChart : stageCard).clientWidth;
+      if (w !== lastW) { lastW = w; refresh(); }
+    }).observe(stageChart.parentNode);
+  }
+  window.addEventListener('resize', refresh);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+
+  syncInputs();
+  render();
+})();
+</script>
+</body>
+</html>
