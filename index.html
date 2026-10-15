@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Etsica Tools</title>
+<style>
+  :root {
+    --bg: #FAF7F2; --ink: #22201C; --muted: #6B655C; --edge: #E3DDD3; --accent: #2F6B4F;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #171614; --ink: #F1EDE6; --muted: #A39C91; --edge: #2E2B27; --accent: #8CC9A8; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem; }
+  h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+  p { color: var(--muted); margin: 0 0 2rem; }
+  ul { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--edge); }
+  li { border-bottom: 1px solid var(--edge); }
+  a { display: block; padding: .9rem 0; color: var(--ink); text-decoration: none; }
+  a:hover strong, a:focus-visible strong { color: var(--accent); }
+  a span { display: block; color: var(--muted); font-size: .9rem; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  footer { margin-top: 2rem; font-size: .85rem; }
+  footer a { display: inline; padding: 0; color: var(--muted); text-decoration: underline; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tools</h1>
+  <p>Small things we made. Free to use.</p>
+
+  <footer><a href="https://etsica.com">etsica.com</a></footer>
+</main>
+</body>
+</html>
